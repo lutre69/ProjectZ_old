@@ -1,0 +1,182 @@
+#:kivy 1.9.1
+
+<Root>:
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'images/projecty.jpg'
+
+<MenuBtn@Button>:
+    background_color: 1, 1, 1, 0.4
+    border: 7, 0, 0, 0
+
+<StandardButton@Button>:
+    size_hint: None, None
+    height: '35dp'
+    font_size: '20sp'
+    width: '250dp'
+    background_color: 1, 1, 1, 0.7
+    border: 7, 0, 0, 0
+
+<Spacing@Label>:
+    size_hint_y: None
+    height: '10dp'
+
+
+<EvalSelectable@Button>:
+    size_hint_y: None
+    height: '60dp'
+    bold: True
+    background_color: 1, 1, 1, 0.2
+    font_size: '25sp'
+    border: 15, 0, 0, 0
+
+
+<Menu>:
+    orientation: 'horizontal'
+    padding: '1dp', '1dp'
+    size_hint_y: .06
+    MenuBtn:
+        text: 'Accueil'
+        on_release: root.switch_content(self.text)
+    MenuBtn:
+        text: 'Evaluation'
+        on_release: root.switch_content(self.text)
+    MenuBtn:
+        text: 'Comportement'
+        on_release: root.switch_content(self.text)
+
+
+<SettingsContent>:
+    padding: '1dp', '1dp'
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: None, .8
+        pos_hint: {'center_x': .5, 'top': 1}
+        width: '250dp'
+        spacing: '5dp'
+        Spacing:
+        StandardButton:
+            text: 'afficher évaluations'
+            on_release: display_label.text=root.parent.format_students_skills()
+        StandardButton:
+            text: 'afficher comportements'
+            on_release: display_label.text=root.parent.format_students_behaviour()
+        StandardButton:
+            text: 'tirer au sort'
+            on_release: root.random_pick_popup(display_label)
+        StandardButton:
+            text: 'changer de classe'
+            on_release: root.open_class_popup(None)
+        Label:
+            id: active_class
+            text: root.active_class
+            size_hint_y: None
+            height: '30dp'
+        Label:
+            id: display_label
+            background_color: 1, 1, 1, .3
+            text: ''
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: None, None
+        pos_hint: {'center_x': .5, 'bottom': 0}
+        width: '250dp'
+        spacing: '5dp'
+        StandardButton:
+            text: 'Exporter les données'
+            on_release: display_label.text = root.root_instance.gather_data()
+        StandardButton:
+            text: 'RAZ des comportements'
+            on_release: display_label.text = root.root_instance.clear_students_behaviour()
+        StandardButton:
+            text: 'RAZ des compétences'
+            on_release: display_label.text = root.root_instance.clear_students_skills()
+
+
+
+<EvaluationContent>:
+    orientation: 'vertical'
+    padding: '1dp', '1dp'
+    EvalSelectable:
+        id: student_name
+        text: root.active_student
+        on_release: root.open_student_popup()
+    EvalSelectable:
+        id: skill_name
+        text: root.skill_title
+        on_release: root.open_skills_popup()
+    Label:
+        text: root.skill_summary
+        color: 1, 1, 1, 1
+        font_size: '17sp'
+        valign: 'top'
+        text_size: self.size
+    BoxLayout:
+        size_hint_y: 0.18
+        orientation: 'horizontal'
+        Button:
+            canvas:
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+                    source: 'images/double_red.png'
+            background_color: 1, 1, 1, 0.3
+            on_release: root.set_student_skill(student_name.text, skill_name.text, -2)
+        Button:
+            canvas:
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+                    source: 'images/red.png'
+            background_color: 1, 1, 1, 0.3
+            on_release: root.set_student_skill(student_name.text, skill_name.text, -1)
+        Button:
+            canvas:
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+                    source: 'images/green.png'
+            background_color: 1, 1, 1, 0.3
+            on_release: root.set_student_skill(student_name.text, skill_name.text, 1)
+        Button:
+            canvas:
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+                    source: 'images/double_green.png'
+            background_color: 1, 1, 1, 0.3
+            on_release: root.set_student_skill(student_name.text, skill_name.text, 2)
+
+
+
+<BehaviourContent>:
+    padding: '1dp', '1dp'
+    EvalSelectable:
+        pos_hint: {'center_x': .5, 'top': 1}
+        id: student_name
+        text: root.active_student
+        on_release: root.open_student_popup()
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: None, None
+        pos_hint: {'center_x': .5, 'center_y': .5}
+        width: '250dp'
+        StandardButton:
+            text: 'Bavardage'
+            on_release: root.set_student_disobedience(student_name.text, self.text)
+        Spacing:
+        StandardButton:
+            text: 'Insolence'
+            on_release: root.set_student_disobedience(student_name.text, self.text)
+        Spacing
+        StandardButton:
+            text: 'Inactivité'
+            on_release: root.set_student_disobedience(student_name.text, self.text)
+        Spacing:
+        StandardButton:
+            text: 'Travail non fait'
+            on_release: root.set_student_disobedience(student_name.text, self.text)
